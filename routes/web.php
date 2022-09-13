@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\ExternalApiController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -22,4 +23,6 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::resource('event', EventController::class)->middleware('auth');
+Route::get('/external', [ExternalApiController::class, 'index']);
+
 Route::get('/search/', [EventController::class, 'search'])->name('search');
