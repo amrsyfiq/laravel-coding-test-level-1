@@ -38,87 +38,55 @@
             </div>
             <div class="clearfix"></div>
 
-            @if (count($events) != 0)
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                        <td>ID</td>
-                        <td>Event Name</td>
-                        <td>Slug</td>
-                        <td>Start At</td>
-                        <td>End At</td>
-                        <td>Created At</td>
-                        <td>Updated At</td>
-                        <td colspan="2">Actions</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($events as $event)
-                        <tr>
-                            <td>{{$event->id}}</td>
-                            <td>{{$event->name}}</td>
-                            <td>{{$event->slug}}</td>
-                            <td>{{$event->startAt}}</td>
-                            <td>{{$event->endAt}}</td>
-                            <td>{{$event->created_at}}</td>
-                            <td>{{$event->updated_at}}</td>
-                            <td>
-                                <a href="{{ route('event.edit', $event->id) }}" class="btn btn-warning"><i class="fa fa-edit" aria-hidden="true"></i></a>
-                            </td>
-                            <td>
-                                <form action="{{ route('event.destroy', $event->id) }}" style="display: inline" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure?')"><i class="fa fa-trash" style="color: #000;"aria-hidden="true"></i></button>
-                                </form>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-                {{ $events->onEachSide(5)->links() }}
-            @else
-                <div class="alert alert-danger p-2">
-                    {{ __('No Event Found. Please create a event') }}
-                    <a href="{{ route('event.create') }}"> here</a> !
-                </div>
-            @endif
-
-                {{-- <div class="card mb-3">
-                    <h5 class="card-header">
-                        {{ __($event->name) }}
-                        <span class="badge rounded-pill bg-light text-dark">Created - {{ __( $event->created_at->diffForHumans() ) }}</span>
-                    </h5>
-
-                    <div class="card-body">
-                        <div class="card-text">
-                            <div class="float-start">
-                                    {{ __($event->slug) }}
-                                <br>
-                                    <span class="badge rounded-pill bg-success text-white">New</span>
-
-                                <small>Last Updated - {{ __( $event->updated_at->diffForHumans() ) }}</small>
-                            </div>
-                            <div class="float-end">
-                                <a href="{{ route('task.index', $event->id) }}" class="btn btn-info"><i class="fa fa-user-circle" aria-hidden="true"></i></a>
-                                <a href="{{ route('event.edit', $event->id) }}" class="btn btn-warning"><i class="fa fa-edit" aria-hidden="true"></i></a>
-                                <form action="{{ route('event.destroy', $event->id) }}" style="display: inline" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure?')"><i class="fa fa-trash" style="color: #000;"aria-hidden="true"></i></button>
-                                </form>
-                            </div>
-                            <div class="clearfix"></div>
+            <div class="card">
+                <div class="card-body m-3">
+                    @if (count($events) != 0)
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                <td>ID</td>
+                                <td>Event Name</td>
+                                <td>Slug</td>
+                                <td>Start At</td>
+                                <td>End At</td>
+                                <td>Created At</td>
+                                <td>Updated At</td>
+                                <td colspan="2">Actions</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($events as $event)
+                                <tr>
+                                    <td>{{$event->id}}</td>
+                                    <td>{{$event->name}}</td>
+                                    <td>{{$event->slug}}</td>
+                                    <td>{{$event->startAt}}</td>
+                                    <td>{{$event->endAt}}</td>
+                                    <td>{{$event->created_at}}</td>
+                                    <td>{{$event->updated_at}}</td>
+                                    <td>
+                                        <a href="{{ route('event.edit', $event->id) }}" class="btn btn-warning"><i class="fa fa-edit" aria-hidden="true"></i></a>
+                                    </td>
+                                    <td>
+                                        <form action="{{ route('event.destroy', $event->id) }}" style="display: inline" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure?')"><i class="fa fa-trash" style="color: #000;"aria-hidden="true"></i></button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                        {{ $events->onEachSide(5)->links() }}
+                    @else
+                        <div class="alert alert-danger p-2">
+                            {{ __('No Event Found. Please create a event') }}
+                            <a href="{{ route('event.create') }}"> here</a> !
                         </div>
-                    </div>
-                </div> --}}
-
-            {{-- @if (count($events) === 0)
-                <div class="alert alert-danger p-2">
-                    {{ __('No Event Found. Please create a event') }}
-                    <a href="{{ route('event.create') }}"> here</a> !
+                    @endif
                 </div>
-            @endif --}}
+            </div>
         </div>
     </div>
 </div>

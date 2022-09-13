@@ -73,6 +73,12 @@
 }
 
 body {
+  min-width: 100%;
+  min-height: 100%;
+  position: relative;
+  background: url("../img/hero-bg2.jpg") top center;
+  background-size: cover;
+  position: relative;
   margin: 0;
   font-family: var(--bs-body-font-family);
   font-size: var(--bs-body-font-size);
