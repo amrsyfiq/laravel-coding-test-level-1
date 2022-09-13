@@ -5,13 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Traits\Uuids;
+use App\Traits\UUID;
 
 class Event extends Model
 {
-    use HasFactory, Uuids, SoftDeletes;
+    use HasFactory, UUID, SoftDeletes;
 
     protected $table = "events";
 
-    protected $fillable = ['name', 'slug', 'start_at', 'end_at', 'updated_at'];
+    protected $fillable = ['name', 'slug', 'startAt', 'endAt', 'updated_at'];
 }
