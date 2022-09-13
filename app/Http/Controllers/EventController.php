@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 // Author : Muhammad Amir Syafiq
 
 use App\Models\Event;
+use App\Mail\EventMail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class EventController extends Controller
 {
@@ -14,15 +16,13 @@ class EventController extends Controller
      *
      * @return void
      */
-    // public function __construct()
-    // {
-    //     $this->middleware('auth');
-    // }
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
      */
     public function index()
     {
@@ -32,8 +32,6 @@ class EventController extends Controller
 
     /**
      * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
      */
     public function create()
     {
@@ -44,7 +42,6 @@ class EventController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
@@ -68,26 +65,15 @@ class EventController extends Controller
         $event->endAt = $request->endAt;
         $event->updated_at = now();
         $event->save();
+        $this->sendEmail($event);
 
-        return redirect()->route('event.index');
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
+        return redirect()->route('event.index')->with('success', 'Event saved and Email sent!');
     }
 
     /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
@@ -101,7 +87,6 @@ class EventController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
@@ -132,7 +117,6 @@ class EventController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
@@ -144,10 +128,8 @@ class EventController extends Controller
 
     /**
      * Search the specified resource in storage.
-     *
+     * 
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
     public function search(Request $request)
     {
@@ -155,5 +137,21 @@ class EventController extends Controller
         $events = Event::where('name', 'LIKE', "%{$search}%")->simplePaginate(5)->appends(request()->query());
 
         return view('events.index', compact('events'));
+    }
+
+    /**
+     * Send email function.
+     */
+    public static function sendEmail($event)
+    {
+        $data = [
+            'title' => 'Test Email',
+            'body' => 'Event created succesfully.',
+            'name' => $event->name,
+            'slug' => $event->slug,
+            'startAt' => $event->startAt,
+            'endAt' => $event->endAt,
+        ];
+        Mail::to('noreply@gmail.com')->send(new EventMail($data));
     }
 }

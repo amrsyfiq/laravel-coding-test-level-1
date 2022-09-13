@@ -21,5 +21,5 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::resource('event', EventController::class);
+Route::resource('event', EventController::class)->middleware('auth');
 Route::get('/search/', [EventController::class, 'search'])->name('search');
