@@ -2,86 +2,102 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+// Author : Muhammad Amir Syafiq
+
 use App\Models\Event;
-use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class EventController extends Controller
 {
     /**
-     * Return all events from the database.
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    // public function __construct()
+    // {
+    //     $this->middleware('auth');
+    // }
+
+    /**
+     * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        try {
-            return Event::all()->isEmpty() ? 'No event' : Event::all();
-        } catch (\Illuminate\Database\QueryException $e) {
-            throw new \Exception('Error');
-        }
+        $events = Event::orderBy('created_at', 'desc')->simplePaginate(5)->appends(request()->query());
+        return view('events.index', compact('events'));
     }
 
     /**
-     * Return all events that are active = current datetime is within startAt and endAt.
+     * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function activeEvent()
+    public function create()
     {
-        try {
-            $now = Carbon::now()->format('Y-m-d H:i:s');
-            $events = Event::where('startAt', '<=', $now)
-                ->where('endAt', '>=', $now)
-                ->get();
-            return $events->isEmpty() ? 'No active event' : $events;
-        } catch (\Illuminate\Database\QueryException $e) {
-            throw new \Exception('Error');
-        }
+        return view('events.create');
     }
 
     /**
-     * Get one event.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        try {
-            $event = Event::find($id);
-            return $event ? $event : 'No event';
-        } catch (\Illuminate\Database\QueryException $e) {
-            throw new \Exception('Error');
-        }
-    }
-
-    /**
-     * Create an event.
+     * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        try {
-            request()->validate([
-                'name' => 'required',
-                'startAt' => ['required', 'date_format:Y-m-d H:i:s'],
-                'endAt' => ['required', 'date_format:Y-m-d H:i:s']
-            ]);
-            return Event::create([
-                'name' => $request->name,
-                'startAt' => $request->startAt,
-                'endAt' => $request->endAt
-            ]);
-        } catch (\Illuminate\Database\QueryException $e) {
-            throw new \Exception('Error');
-        }
+        $request->validate(
+            [
+                'name' => 'required|unique:events|max:255',
+                'startAt' => 'required|before_or_equal:endAt',
+                'endAt' => 'required|after_or_equal:startAt'
+            ],
+            [
+                'startAt.before_or_equal' => 'Start datetime must be before or equal to End datetime',
+                'endAt.after_or_equal' => 'End datetime must be after  or equal to Start datetime'
+            ]
+        );
+
+        $event = new Event();
+
+        $event->name = $request->name;
+        $event->slug = str_slug($request->name, '-');
+        $event->startAt = $request->startAt;
+        $event->endAt = $request->endAt;
+        $event->updated_at = now();
+        $event->save();
+
+        return redirect()->route('event.index');
     }
 
     /**
-     * Create event if not exist, else update the event in idempotent way.
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        $event = Event::findOrFail($id);
+
+        return view('events.edit', compact('event'));
+    }
+
+    /**
+     * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -89,69 +105,55 @@ class EventController extends Controller
      */
     public function update(Request $request, $id)
     {
-        try {
-            request()->validate([
-                'name' => 'required',
-                'startAt' => 'date_format:Y-m-d H:i:s',
-                'endAt' => 'date_format:Y-m-d H:i:s'
-            ]);
-            $event = Event::updateOrCreate(
-                ['id' =>  $id],
-                [
-                    'name' =>  $request->name,
-                    'startAt' => $request->startAt,
-                    'endAt' => $request->endAt
-                ]
-            );
-            return $event ? $event : 'No Event';
-        } catch (\Illuminate\Database\QueryException $e) {
-            throw new \Exception('Error');
-        }
+        $event = Event::findOrFail($id);
+
+        $request->validate(
+            [
+                'startAt' => 'required|before_or_equal:endAt',
+                'endAt' => 'required|after_or_equal:startAt'
+            ],
+            [
+                'startAt.before_or_equal' => 'Start datetime must be before or equal to End datetime',
+                'endAt.after_or_equal' => 'End datetime must be after  or equal to Start datetime'
+            ]
+        );
+
+        $event->name = $request->name;
+        $event->slug = str_slug($request->name, '-');
+        $event->startAt = $request->startAt;
+        $event->endAt = $request->endAt;
+        $event->updated_at = now();
+        $event->save();
+
+        return redirect()->route('event.index');
     }
 
     /**
-     * Partially update event.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function patch(Request $request, $id)
-    {
-        try {
-            $event = Event::findOrfail($id);
-            if ($request->name) {
-                $event->name = $request->name;
-            }
-
-            if ($request->startAt) {
-                $event->startAt = $request->startAt;
-            }
-
-            if ($request->endAt) {
-                $event->endAt = $request->endAt;
-            }
-            $event->save();
-            return $event ? $event : 'No Event';
-        } catch (\Illuminate\Database\QueryException $e) {
-            throw new \Exception('Error');
-        }
-    }
-
-    /**
-     * Soft delete an event.
+     * Remove the specified resource from storage.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        try {
-            $event = Event::findOrfail($id);
-            $success = $event->delete();
-            return ['success' => $success];
-        } catch (\Illuminate\Database\QueryException $e) {
-            throw new \Exception('Error');
-        }
+        $event = Event::findOrFail($id);
+
+        $event->delete();
+        return redirect()->route('event.index');
+    }
+
+    /**
+     * Search the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function search(Request $request)
+    {
+        $search = $request->input('search');
+        $events = Event::where('name', 'LIKE', "%{$search}%")->simplePaginate(5)->appends(request()->query());
+
+        return view('events.index', compact('events'));
     }
 }
