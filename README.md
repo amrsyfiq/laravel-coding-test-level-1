@@ -17,8 +17,8 @@ http://app-test.qr9aq6pt1u-rz83yo8e4d70.s.temp-site.link/
 6.    configure .env file
 7.    create database & make sure with `Charset=utf8mb4` and `Collation=utf8mb4_unicode_ci`
 8.    run `php artisan migrate` or `php artisan db:seed` to load with dummy data
-9.    run `php artisan serve`
-10.    open http://127.0.0.1:8000/ in the browser
+9.    run `php artisan serve` & open http://127.0.0.1:8000/ in the browser, or
+10.   run `npm install && run dev` & open http://laravel-test.test/ in the browser
 
 ## Setup If Using Docker
 1.    git clone https://github.com/amrsyfiq/laravel-coding-test-level-1.git
@@ -31,5 +31,5 @@ http://app-test.qr9aq6pt1u-rz83yo8e4d70.s.temp-site.link/
 8.    configure .env file
 9.    create database & make sure with `Charset=utf8mb4` and `Collation=utf8mb4_unicode_ci`
 10.   run `php artisan migrate` or `php artisan db:seed` to load with dummy data
-11.   run `php artisan serve`
-12.   open http://127.0.0.1:8000/ in the browser
+11.   run `php artisan serve` & open http://127.0.0.1:8000/ in the browser, or
+12.   run `npm install && run dev` & open http://laravel-test.test/ in the browser
