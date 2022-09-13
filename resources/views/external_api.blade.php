@@ -27,7 +27,7 @@
 
             <div class="card">
                 <div class="card-body m-3">
-                    @if (!empty($data))
+                    @if (isset($data['data']))
                         <table class="table table-striped">
                             <thead>
                                 <tr>
