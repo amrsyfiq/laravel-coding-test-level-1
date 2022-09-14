@@ -22,7 +22,8 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::resource('event', EventController::class)->middleware('auth');
-Route::get('/external', [ExternalApiController::class, 'index']);
-
-Route::get('/search/', [EventController::class, 'search'])->name('search');
+Route::group(['middleware' => 'auth'], function () {
+    Route::resource('event', EventController::class)->middleware('auth');
+    Route::get('/search/', [EventController::class, 'search'])->name('search');
+    Route::get('/external', [ExternalApiController::class, 'index']);
+});
