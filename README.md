@@ -1,6 +1,6 @@
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
 
-Laravel Live Coding Test - https://github.com/ACN-Coding-Test/laravel-coding-test-level-1
+Laravel Live Coding Test - https://github.com/ACN-Coding-Test/laravel-coding-test-level-1/
 
 Deployed Application URL - https://laravel-test.amrsyfiq.dev/
 
